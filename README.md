@@ -34,6 +34,12 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
 pip install foobar
 ```
 
+#### Downloading dataset
+
+The script to download the dataset for **task B** is available at [self-driving data repository](https://github.com/paulaksm/self_driving_data). 
+
+You can place the created folder `data/` wherever you like, but _don't rename the `.npy` files_.
+
 ## Usage
 
 ```python
