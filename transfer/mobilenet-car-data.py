@@ -10,7 +10,7 @@ from keras.preprocessing import image
 from keras import optimizers
 from progress.bar import Bar
 from keras.utils import to_categorical
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.utils import np_utils
 from DataGenerator import DataGenerator
 
@@ -19,7 +19,7 @@ if os.path.exists(dir_checkpoints):
     shutil.rmtree(dir_checkpoints)
 os.makedirs(dir_checkpoints)
 
-path_checkpoints = "weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
+path_checkpoints = "model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
 
 start_time = datetime.datetime.now()
 
