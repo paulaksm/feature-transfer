@@ -19,7 +19,7 @@ if os.path.exists(dir_checkpoints):
     shutil.rmtree(dir_checkpoints)
 os.makedirs(dir_checkpoints)
 
-path_checkpoints = "model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
+path_checkpoints = "checkpoints/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
 
 start_time = datetime.datetime.now()
 
