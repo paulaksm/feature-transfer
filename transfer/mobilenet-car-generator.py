@@ -15,9 +15,9 @@ from keras.utils import np_utils
 from DataGenerator import DataGenerator
 
 global data_gen
-data_gen = DataGenerator('/var/tmp/pksm/self_driving_data/data/')
+data_gen = DataGenerator('/content/data/')
 
-def npy_generator(dataset_path='/var/tmp/pksm/self_driving_data/data/', usage='train', batch_size=64):
+def npy_generator(dataset_path='/content/data/', usage='train', batch_size=64):
     init_idx = 0
     end_idx = batch_size
     file = os.path.join(dataset_path, usage)
@@ -51,10 +51,10 @@ start_time = datetime.datetime.now()
 # X_valid, y_valid = data_gen.load_data(usage='valid')
 # X_valid, y_valid = data_gen.preprocess_data(X_valid, y_valid, balance='undersampling')
 
-x_train = np.load('/var/tmp/pksm/self_driving_data/data/train_data.npy', mmap_mode='r')
+x_train = np.load('/content/data/train_data.npy', mmap_mode='r')
 x_train_samples = x_train.shape[0]
 
-x_valid = np.load('/var/tmp/pksm/self_driving_data/data/valid_data.npy', mmap_mode='r')
+x_valid = np.load('/content/data/valid_data.npy', mmap_mode='r')
 x_valid_samples = x_valid.shape[0]
 
 del x_train, x_valid
