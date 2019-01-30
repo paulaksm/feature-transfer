@@ -18,22 +18,24 @@ global data_gen
 data_gen = DataGenerator('/content/data/')
 
 def npy_generator(dataset_path='/content/data/', usage='train', batch_size=64):
-    init_idx = 0
-    end_idx = batch_size
     file = os.path.join(dataset_path, usage)
     file_data = file + '_data.npy'
     file_label = file + '_labels.npy'
     x = np.load(file_data, mmap_mode='r')
     y = np.load(file_label, mmap_mode='r')
-    for i in range(np.ceil(x.shape[0]/batch_size).astype(int)):
-        x_batch = x[init_idx:end_idx][:]
-        y_batch = y[init_idx:end_idx]
-        x_batch, y_batch = data_gen.preprocess_data(x_batch, y_batch)
-        init_idx += batch_size
-        end_idx += batch_size
-        if end_idx > x.shape[0]:
-            end_idx = x.shape[0]
-        yield x_batch, y_batch
+    while True:
+        init_idx = 0
+        end_idx = batch_size
+        for i in range(np.ceil(x.shape[0]/batch_size).astype(int)):
+            x_batch = x[init_idx:end_idx][:]
+            y_batch = y[init_idx:end_idx]
+            x_batch, y_batch = data_gen.preprocess_data(x_batch, y_batch)
+            init_idx += batch_size
+            end_idx += batch_size
+            if end_idx > x.shape[0]:
+                end_idx = x.shape[0]
+            yield x_batch, y_batch
+
 
 dir_checkpoints = 'checkpoints'
 if os.path.exists(dir_checkpoints):
