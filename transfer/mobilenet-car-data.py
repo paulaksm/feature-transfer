@@ -23,7 +23,8 @@ path_checkpoints = "checkpoints/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5
 
 start_time = datetime.datetime.now()
 
-data_gen = DataGenerator('/var/tmp/pksm/self_driving_data/data/')
+data_gen = DataGenerator('/content/self_driving_data/data/')
+#data_gen = DataGenerator('/var/tmp/pksm/self_driving_data/data/')
 X_train, y_train = data_gen.load_data(usage='train')
 X_train, y_train = data_gen.preprocess_data(X_train, y_train, balance='undersampling')
 
