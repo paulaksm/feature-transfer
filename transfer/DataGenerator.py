@@ -1,8 +1,7 @@
 import os
 import PIL
-import argparse
 import numpy as np
-from progress.bar import Bar
+# from progress.bar import Bar
 from keras import applications as pretrained
 from keras.preprocessing import image
 from keras.utils import to_categorical
@@ -120,8 +119,8 @@ class DataGenerator:
         shape = (self.shape[0], self.shape[1], 3)
         all_images = []
         flat_shape = target_shape[0] * target_shape[1] * 3
-        print('Transforming data images...')
-        bar = Bar('Transforming for MobileNet standard', max=data.shape[0])
+        # print('Transforming data images...')
+        # bar = Bar('Transforming for MobileNet standard', max=data.shape[0])
         for img in data:
             img = img.reshape(shape)
             img = image.array_to_img(img, data_format='channels_last')
@@ -131,8 +130,8 @@ class DataGenerator:
             img = self.target_model.preprocess_input(img)
             img = img.reshape(flat_shape)
             all_images.append(img)
-            bar.next()
-        bar.finish()
+            # bar.next()
+        # bar.finish()
         data = np.array(all_images)
         data = data.reshape((-1, target_shape[0], target_shape[1], 3))
         labels = to_categorical(labels, 3)
