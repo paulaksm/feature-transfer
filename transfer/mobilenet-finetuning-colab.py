@@ -6,7 +6,7 @@ import numpy as np
 from keras import applications as pretrained
 from keras.models import Model
 from keras import optimizers
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from keras.layers import Conv2D, Reshape, Activation
 from keras.initializers import VarianceScaling
 from DataGenerator import DataGenerator
@@ -32,6 +32,29 @@ def npy_generator(dataset_path='/content/data/', usage='train', batch_size=64):
             if end_idx > x.shape[0]:
                 end_idx = x.shape[0]
             yield x_batch, y_batch
+
+class MyCallback(Callback):
+    def on_epoch_begin(self, epoch, logs=None):
+        end_frozen = self.model.get_layer('dropout')
+        if epoch == 1:
+            for i in self.model.layers:
+                if i.name == 'input_1':
+                    continue
+                elif i.name == end_frozen.name:
+                    break
+                else:
+                    i.trainable = False
+        elif epoch == 2:
+            for i in self.model.layers:
+                if i.name == 'input_1':
+                    continue
+                elif i.name == end_frozen.name:
+                    break
+                else:
+                    i.trainable = True
+                
+        else:
+            pass
 
 start_time = datetime.datetime.now()
 
@@ -83,11 +106,13 @@ checkpoint = ModelCheckpoint(path_checkpoints,
                              save_best_only=True, 
                              mode='max')
 
+custom_callback = MyCallback()
+
 hist = model.fit_generator(npy_generator(usage='train', batch_size=batch_size),
                            steps_per_epoch = np.ceil(x_train_samples / batch_size).astype(int),
                            validation_data=npy_generator(usage='valid', batch_size=batch_size),
                            validation_steps=np.ceil(x_valid_samples / batch_size).astype(int),
-                           callbacks = [stopper, checkpoint],
+                           callbacks = [stopper, checkpoint, custom_callback],
                            epochs=epochs, 
                            verbose=1)
 
