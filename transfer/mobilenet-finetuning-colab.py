@@ -4,7 +4,6 @@ from keras.preprocessing import image
 from keras import optimizers
 import numpy as np
 import PIL
-from progress.bar import Bar
 from keras.utils import to_categorical
 from keras.callbacks import EarlyStopping
 from keras.utils import np_utils
