@@ -1,18 +1,15 @@
-from keras import applications as pretrained
-from keras.models import Model, Sequential
-from keras.preprocessing import image
-from keras import optimizers
-import numpy as np
-import PIL
-from keras.utils import to_categorical
-from keras.callbacks import EarlyStopping
-from keras.utils import np_utils
-from keras.layers import Conv2D, Reshape, Activation
-from keras.initializers import VarianceScaling
-from DataGenerator import DataGenerator
 import os
 import shutil
 import json
+import datetime
+import numpy as np
+from keras import applications as pretrained
+from keras.models import Model
+from keras import optimizers
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.layers import Conv2D, Reshape, Activation
+from keras.initializers import VarianceScaling
+from DataGenerator import DataGenerator
 
 global data_gen
 data_gen = DataGenerator('/content/data/')
@@ -36,6 +33,7 @@ def npy_generator(dataset_path='/content/data/', usage='train', batch_size=64):
                 end_idx = x.shape[0]
             yield x_batch, y_batch
 
+start_time = datetime.datetime.now()
 
 cwd = os.getcwd()
 dir_checkpoints = os.path.join(cwd, 'checkpoints')
