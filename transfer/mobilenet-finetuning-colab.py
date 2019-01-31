@@ -66,7 +66,7 @@ conv2d = Conv2D(3,
                data_format='channels_last', 
                kernel_initializer=VarianceScaling(distribution='uniform', mode='fan_avg'))(model2.output)
 act = Activation('softmax')(conv2d)
-res = Reshape((3,))(act)
+res = Reshape((3,), name='last_reshape')(act)
 
 model = Model(inputs=model2.input, outputs=res)
 
