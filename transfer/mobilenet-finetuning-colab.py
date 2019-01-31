@@ -1,17 +1,15 @@
-import os
-import PIL
-import json
-import shutil
-import datetime
-import numpy as np
 from keras import applications as pretrained
-from keras.models import Model
+from keras.models import Model, Sequential
 from keras.preprocessing import image
 from keras import optimizers
+import numpy as np
+import PIL
 from progress.bar import Bar
 from keras.utils import to_categorical
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.callbacks import EarlyStopping
 from keras.utils import np_utils
+from keras.layers import Conv2D, Reshape, Activation
+from keras.initializers import VarianceScaling
 from DataGenerator import DataGenerator
 
 global data_gen
@@ -45,15 +43,6 @@ os.makedirs(dir_checkpoints)
 d = os.path.expanduser(dir_checkpoints)
 path_checkpoints = os.path.join(d, 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5')
 
-start_time = datetime.datetime.now()
-
-# #data_gen = DataGenerator('/var/tmp/pksm/self_driving_data/data/')
-# X_train, y_train = data_gen.load_data(usage='train')
-# X_train, y_train = data_gen.preprocess_data(X_train, y_train, balance='undersampling')
-
-# X_valid, y_valid = data_gen.load_data(usage='valid')
-# X_valid, y_valid = data_gen.preprocess_data(X_valid, y_valid, balance='undersampling')
-
 x_train = np.load('/content/data/train_data.npy', mmap_mode='r')
 x_train_samples = x_train.shape[0]
 
@@ -62,17 +51,28 @@ x_valid_samples = x_valid.shape[0]
 
 del x_train, x_valid
 
+###############################################
 
 batch_size = 64
 epochs = 15
 
-model = pretrained.mobilenet.MobileNet(weights=None, classes=3)
+model = pretrained.mobilenet.MobileNet(weights='imagenet')
+model2 = Model(inputs=model.input, outputs=model.get_layer('dropout').output)
+conv2d = Conv2D(3,
+               (1, 1), 
+               padding='same', 
+               data_format='channels_last', 
+               kernel_initializer=VarianceScaling(distribution='uniform', mode='fan_avg'))(model2.output)
+act = Activation('softmax')(conv2d)
+res = Reshape((3,))(act)
+
+model = Model(inputs=model2.input, outputs=res)
+
 
 sgd = optimizers.SGD(lr=0.01, decay=0.0005, momentum=0.9)
 model.compile(loss='categorical_crossentropy',
               optimizer=sgd,
               metrics=['accuracy'])
-
 
 stopper = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=3, verbose=1)
 
@@ -82,42 +82,24 @@ checkpoint = ModelCheckpoint(path_checkpoints,
                              save_best_only=True, 
                              mode='max')
 
-# history = model.fit(X_train, 
-#                     y_train, 
-#                     validation_data=(X_valid, y_valid), 
-#                     epochs=epochs, 
-#                     batch_size=batch_size,
-#                     callbacks = [stopper, checkpoint],
-#                     shuffle=True,
-#                     verbose=1)
+hist = model.fit_generator(npy_generator(usage='train', batch_size=batch_size),
+                           steps_per_epoch = np.ceil(x_train_samples / batch_size).astype(int),
+                           validation_data=npy_generator(usage='valid', batch_size=batch_size),
+                           validation_steps=np.ceil(x_valid_samples / batch_size).astype(int),
+                           callbacks = [stopper, checkpoint],
+                           epochs=epochs, 
+                           verbose=1)
 
-model.fit_generator(npy_generator(usage='train', batch_size=batch_size),
-                    steps_per_epoch = np.ceil(x_train_samples / batch_size).astype(int),
-                    validation_data=npy_generator(usage='valid', batch_size=batch_size),
-                    validation_steps=np.ceil(x_valid_samples / batch_size).astype(int),
-                    callbacks = [stopper, checkpoint],
-                    epochs=epochs, 
-                    verbose=1)
-
-# model.fit(X_train, 
-#           y_train, 
-#           validation_data=(X_valid, y_valid), 
-#           epochs=epochs, 
-#           batch_size=batch_size,
-#           verbose=2)
 
 model.save("self-driving-data-mobilenet.h5")
 print("Saved model to disk")
 
-# file_name = 'hist_{}{}{}_{}{}.json'.format(start_time.year, 
-#                                            start_time.month, 
-#                                            start_time.day, 
-#                                            start_time.hour, 
-#                                            start_time.minute)
-# with open(file_name, 'w') as file:
-#   json.dump(history, file)
+file_name = 'hist_{}{}{}_{}{}.json'.format(start_time.year, 
+                                           start_time.month, 
+                                           start_time.day, 
+                                           start_time.hour, 
+                                           start_time.minute)
+with open(file_name, 'w') as file:
+  json.dump(hist.history, file)
 
-# score = model.evaluate(X_valid, y_valid, verbose=0)
-# print('Valid loss:', score[0])
-# print('Valid accuracy:', score[1])
 
