@@ -8,7 +8,6 @@ from keras import applications as pretrained
 from keras.models import Model
 from keras.preprocessing import image
 from keras import optimizers
-from progress.bar import Bar
 from keras.utils import to_categorical
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.utils import np_utils
@@ -37,22 +36,16 @@ def npy_generator(dataset_path='/content/data/', usage='train', batch_size=64):
             yield x_batch, y_batch
 
 
-cwd = os.getcwd()
-dir_checkpoints = os.path.join(cwd, 'checkpoints')
-if os.path.exists(dir_checkpoints):
-    shutil.rmtree(dir_checkpoints)
-os.makedirs(dir_checkpoints)
-d = os.path.expanduser(dir_checkpoints)
-path_checkpoints = os.path.join(d, 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5')
+# cwd = os.getcwd()
+# dir_checkpoints = os.path.join(cwd, 'checkpoints')
+# if os.path.exists(dir_checkpoints):
+#     shutil.rmtree(dir_checkpoints)
+# os.makedirs(dir_checkpoints)
+# d = os.path.expanduser(dir_checkpoints)
+# path_checkpoints = os.path.join(d, 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5')
+path_checkpoints = 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
 
 start_time = datetime.datetime.now()
-
-# #data_gen = DataGenerator('/var/tmp/pksm/self_driving_data/data/')
-# X_train, y_train = data_gen.load_data(usage='train')
-# X_train, y_train = data_gen.preprocess_data(X_train, y_train, balance='undersampling')
-
-# X_valid, y_valid = data_gen.load_data(usage='valid')
-# X_valid, y_valid = data_gen.preprocess_data(X_valid, y_valid, balance='undersampling')
 
 x_train = np.load('/content/data/train_data.npy', mmap_mode='r')
 x_train_samples = x_train.shape[0]
@@ -106,7 +99,7 @@ model.fit_generator(npy_generator(usage='train', batch_size=batch_size),
 #           batch_size=batch_size,
 #           verbose=2)
 
-model.save("self-driving-data-mobilenet.h5")
+model.save("random-baseB-mobilenet.h5")
 print("Saved model to disk")
 
 # file_name = 'hist_{}{}{}_{}{}.json'.format(start_time.year, 

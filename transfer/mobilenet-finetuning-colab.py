@@ -35,13 +35,14 @@ def npy_generator(dataset_path='/content/data/', usage='train', batch_size=64):
 
 start_time = datetime.datetime.now()
 
-cwd = os.getcwd()
-dir_checkpoints = os.path.join(cwd, 'checkpoints')
-if os.path.exists(dir_checkpoints):
-    shutil.rmtree(dir_checkpoints)
-os.makedirs(dir_checkpoints)
-d = os.path.expanduser(dir_checkpoints)
-path_checkpoints = os.path.join(d, 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5')
+# cwd = os.getcwd()
+# dir_checkpoints = os.path.join(cwd, 'checkpoints')
+# if os.path.exists(dir_checkpoints):
+#     shutil.rmtree(dir_checkpoints)
+# os.makedirs(dir_checkpoints)
+# d = os.path.expanduser(dir_checkpoints)
+# path_checkpoints = os.path.join(d, 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5')
+path_checkpoints = 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
 
 x_train = np.load('/content/data/train_data.npy', mmap_mode='r')
 x_train_samples = x_train.shape[0]
@@ -91,7 +92,7 @@ hist = model.fit_generator(npy_generator(usage='train', batch_size=batch_size),
                            verbose=1)
 
 
-model.save("self-driving-data-mobilenet.h5")
+model.save("finetuning-baseB-mobilenet.h5")
 print("Saved model to disk")
 
 file_name = 'hist_{}{}{}_{}{}.json'.format(start_time.year, 
