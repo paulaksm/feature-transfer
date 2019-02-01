@@ -70,6 +70,14 @@ def train(dataset_path, base_model_path, freeze_n):
     path_checkpoints = 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
     file_data = os.path.join(dataset_path, '_data.npy')
     file_label = os.path.join(dataset_path, '_labels.npy')
+    x_train = np.load(file_data, mmap_mode='r')
+    x_train_samples = x_train.shape[0]
+
+    x_valid = np.load(file_label, mmap_mode='r')
+    x_valid_samples = x_valid.shape[0]
+
+    del x_train, x_valid
+    
     batch_size = 64
     epochs = 15
     model = load_model(base_model_path)
