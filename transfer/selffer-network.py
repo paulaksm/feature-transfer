@@ -81,6 +81,7 @@ def train(dataset_path, base_model_path, freeze_n):
     batch_size = 64
     epochs = 15
     model = load_model(base_model_path)
+    global frozen_weights
     frozen_weights = model.get_layer('conv_pw_1').get_weights()
     frozen(model, n=freeze_n)
     
@@ -111,7 +112,6 @@ def train(dataset_path, base_model_path, freeze_n):
 
 
 def main():
-    global frozen_weights
     args = parse()
     train(args.data, args.base, args.n_freeze)
 
