@@ -90,9 +90,9 @@ def train(dataset_path, base_model_path, freeze_n):
                                  mode='max')
     custom_callback = MyCallback()
 
-    hist = model.fit_generator(npy_generator(usage='train', batch_size=batch_size),
+    hist = model.fit_generator(npy_generator(dataset_path, usage='train', batch_size=batch_size),
                                steps_per_epoch = np.ceil(x_train_samples / batch_size).astype(int),
-                               validation_data=npy_generator(usage='valid', batch_size=batch_size),
+                               validation_data=npy_generator(dataset_path, usage='valid', batch_size=batch_size),
                                validation_steps=np.ceil(x_valid_samples / batch_size).astype(int),
                                callbacks = [stopper, checkpoint, custom_callback],
                                epochs=epochs, 
