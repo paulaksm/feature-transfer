@@ -7,7 +7,7 @@ from keras import applications as pretrained
 from keras.models import Model, load_model
 from keras.preprocessing import image
 from keras import optimizers
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from keras.utils import np_utils
 from DataGenerator import DataGenerator
 
