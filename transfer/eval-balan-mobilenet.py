@@ -11,32 +11,12 @@ from keras import applications as pretrained
 from keras.models import load_model
 from keras.preprocessing import image
 from keras import optimizers
-from progress.bar import Bar
-from keras.utils import to_categorical
 from keras.utils import np_utils
 from DataGenerator import DataGenerator
 
 shape = (45, 80, 3)
 target_size = (224, 224)
 flat_shape = target_size[0] * target_size[1] * 3
-
-def preprocessing(dataset):
-    all_images = []
-    print('Transforming images...')
-    bar = Bar('Transforming for MobileNet standard', max=dataset.shape[0])
-    for img in dataset:
-        img = img.reshape(shape)
-        img = image.array_to_img(img, data_format='channels_last')
-        img = img.resize(target_size, resample=PIL.Image.NEAREST)
-        img = image.img_to_array(img)
-        img = np.expand_dims(img, axis=0)
-        img = pretrained.mobilenet.preprocess_input(img)
-        img = img.reshape(flat_shape)
-        all_images.append(img)
-        bar.next()    
-    bar.finish()
-    processed_data = np.array(all_images)
-    return processed_data
 
 def evaluate(model, data, labels):
     scores = model.evaluate(data, labels, verbose=1)
@@ -70,8 +50,12 @@ def main():
     data_gen  = DataGenerator('')
     prep_data, prep_labels  = data_gen.preprocess_data(data, 
                                                        labels,
-                                                        balance='undersampling')
+                                                       balance='undersampling')
     del data
+    print('Evaluating model on {} samples'.format(prep_labels.shape[0]))
+    a, b = np.unique(prep_labels, return_counts=True)
+    print(b)
+    print('Class distribution: ')
     model = load_model(user_args.trained_model)
     evaluate(model, prep_data, prep_labels)
 
