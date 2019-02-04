@@ -50,7 +50,7 @@ def main():
     data_gen  = DataGenerator('')
     prep_data, prep_labels  = data_gen.preprocess_data(data, 
                                                        labels,
-                                                       balance='undersampling')
+                                                       balance='equals')
     del data
     print('Evaluating model on {} samples'.format(prep_labels.shape[0]))
     print('Class distribution:')

@@ -68,6 +68,29 @@ class DataGenerator:
         labels = labels[idx_sel]
         return data, labels
 
+    def _equals(self,
+                data,
+                labels):
+        _, count = np.unique(labels,
+                             return_counts=True)
+        minority_class = np.argmin(count)
+        size_minor = count[minority_class]
+        all_idx = np.array(range(0, labels.shape[0]))
+        result = np.array([], dtype=np.int)
+        for arg, i in enumerate(count):
+            if arg == minority_class:
+                continue
+            idx = np.argwhere(labels == arg)
+            remove_size = i - size_minor
+            idx_rem = np.random.choice(idx.flatten(),
+                                       size=remove_size,
+                                       replace=False)
+            result = np.append(result, idx_rem)
+        idx_sel = np.delete(all_idx, result) # só pega o ultimo....arrumar!!!
+        data = data[idx_sel]
+        labels = labels[idx_sel]
+        return data, labelss
+
     def load_data(self,
                   usage='train'):
         """
@@ -117,6 +140,8 @@ class DataGenerator:
         """
         if balance == 'undersampling':
             data, labels = self._undersampling(data, labels)
+        if balance == 'equals':
+            data, labels = self._equals(data, labels)
         shape = (self.shape[0], self.shape[1], 3)
         all_images = []
         flat_shape = target_shape[0] * target_shape[1] * 3
