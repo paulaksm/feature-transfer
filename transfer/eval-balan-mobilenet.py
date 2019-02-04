@@ -53,9 +53,9 @@ def main():
                                                        balance='undersampling')
     del data
     print('Evaluating model on {} samples'.format(prep_labels.shape[0]))
-    a, b = np.unique(prep_labels, return_counts=True)
-    print(b)
-    print('Class distribution: ')
+    print('Class distribution:')
+    for i in range(3):
+        print('{} : {}'.format(i, np.sum(prep_labels[:, i]).astype(int)))
     model = load_model(user_args.trained_model)
     evaluate(model, prep_data, prep_labels)
 
