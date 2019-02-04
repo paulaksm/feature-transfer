@@ -58,8 +58,9 @@ class DataGenerator:
         count.sort()
         size_2nd_highest = count[-2]  # second highest in count variable
         idx_up = np.argwhere(labels == majority_class)
+        remove_size = idx_up.shape[0] - size_2nd_highest
         idx_sel = np.random.choice(idx_up.flatten(),
-                                   size=size_2nd_highest,
+                                   size=remove_size,
                                    replace=False)
         all_idx = np.array(range(0, labels.shape[0]))
         idx_sel = np.delete(all_idx, idx_sel)
@@ -119,8 +120,6 @@ class DataGenerator:
         shape = (self.shape[0], self.shape[1], 3)
         all_images = []
         flat_shape = target_shape[0] * target_shape[1] * 3
-        # print('Transforming data images...')
-        # bar = Bar('Transforming for MobileNet standard', max=data.shape[0])
         for img in data:
             img = img.reshape(shape)
             img = image.array_to_img(img, data_format='channels_last')
@@ -130,15 +129,35 @@ class DataGenerator:
             img = self.target_model.preprocess_input(img)
             img = img.reshape(flat_shape)
             all_images.append(img)
-            # bar.next()
-        # bar.finish()
         data = np.array(all_images)
         data = data.reshape((-1, target_shape[0], target_shape[1], 3))
         labels = to_categorical(labels, 3)
         assert data.shape[0] == labels.shape[0], 'Shape mismatch.'
-        # print(data.shape, labels.shape)
         return data, labels
 
+    def npy_generator(self,
+                      usage='train',
+                      batch_size=64):
+        '''
+        Pass
+        '''
+        file = os.path.join(self.path, usage)
+        file_data = file + '_data.npy'
+        file_label = file + '_labels.npy'
+        x = np.load(file_data, mmap_mode='r')
+        y = np.load(file_label, mmap_mode='r')
+        while True:
+            init_idx = 0
+            end_idx = batch_size
+            for i in range(np.ceil(x.shape[0] / batch_size).astype(int)):
+                x_batch = x[init_idx:end_idx][:]
+                y_batch = y[init_idx:end_idx]
+                x_batch, y_batch = self.preprocess_data(x_batch, y_batch)
+                init_idx += batch_size
+                end_idx += batch_size
+                if end_idx > x.shape[0]:
+                    end_idx = x.shape[0]
+                yield x_batch, y_batch
 
 # def main():
 #     x = DataGenerator('~/self_driving_data/data/')
