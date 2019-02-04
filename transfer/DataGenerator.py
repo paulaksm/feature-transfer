@@ -89,7 +89,7 @@ class DataGenerator:
         idx_sel = np.delete(all_idx, result) # só pega o ultimo....arrumar!!!
         data = data[idx_sel]
         labels = labels[idx_sel]
-        return data, labelss
+        return data, labels
 
     def load_data(self,
                   usage='train'):
