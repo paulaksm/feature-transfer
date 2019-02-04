@@ -1,21 +1,19 @@
 import os
-import shutil
-import datetime
 import numpy as np
 import argparse
-from keras import applications as pretrained
-from keras.models import Model, load_model
-from keras.preprocessing import image
+from keras.models import load_model
 from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
-from keras.utils import np_utils
 from DataGenerator import DataGenerator
 
-class MyCallback(Callback):
+
+class CustomCallback(Callback):
     def on_epoch_end(self, epoch, logs=None):
         layer = self.model.get_layer('conv_pw_1')
         weights = layer.get_weights()
-        assert np.array_equal(frozen_weights, weights), "Weights change after epoch {}".format(epoch)
+        msg = "Weights change after epoch {}".format(epoch+1)
+        assert np.array_equal(frozen_weights, weights), msg
+
 
 def parse():
     description = 'Selffer network'
@@ -33,34 +31,35 @@ def parse():
     return parser.parse_args()
 
 
-def npy_generator(dataset_path, usage='train', batch_size=64):
-    data_gen = DataGenerator(dataset_path)
-    file = os.path.join(dataset_path, usage)
-    file_data = file + '_data.npy'
-    file_label = file + '_labels.npy'
-    x = np.load(file_data, mmap_mode='r')
-    y = np.load(file_label, mmap_mode='r')
-    while True:
-        init_idx = 0
-        end_idx = batch_size
-        for i in range(np.ceil(x.shape[0]/batch_size).astype(int)):
-            x_batch = x[init_idx:end_idx][:]
-            y_batch = y[init_idx:end_idx]
-            x_batch, y_batch = data_gen.preprocess_data(x_batch, y_batch)
-            init_idx += batch_size
-            end_idx += batch_size
-            if end_idx > x.shape[0]:
-                end_idx = x.shape[0]
-            yield x_batch, y_batch
+# def npy_generator(dataset_path, usage='train', batch_size=64):
+#     data_gen = DataGenerator(dataset_path)
+#     file = os.path.join(dataset_path, usage)
+#     file_data = file + '_data.npy'
+#     file_label = file + '_labels.npy'
+#     x = np.load(file_data, mmap_mode='r')
+#     y = np.load(file_label, mmap_mode='r')
+#     while True:
+#         init_idx = 0
+#         end_idx = batch_size
+#         for i in range(np.ceil(x.shape[0]/batch_size).astype(int)):
+#             x_batch = x[init_idx:end_idx][:]
+#             y_batch = y[init_idx:end_idx]
+#             x_batch, y_batch = data_gen.preprocess_data(x_batch, y_batch)
+#             init_idx += batch_size
+#             end_idx += batch_size
+#             if end_idx > x.shape[0]:
+#                 end_idx = x.shape[0]
+#             yield x_batch, y_batch
+
 
 def frozen(model,
            n=1):
-    dsc = [ 'conv_dw_{}', 
-            'conv_dw_{}_bn', 
-            'conv_dw_{}_relu', 
-            'conv_pw_{}',
-            'conv_pw_{}_bn',
-            'conv_dw_{}_relu' ]
+    dsc = ['conv_dw_{}', 
+           'conv_dw_{}_bn', 
+           'conv_dw_{}_relu', 
+           'conv_pw_{}',
+           'conv_pw_{}_bn',
+           'conv_dw_{}_relu']
     for i in range(1, n+1):
         for layer in dsc:
             model.get_layer(layer.format(i)).trainable = False  
@@ -81,6 +80,7 @@ def train(dataset_path, base_model_path, freeze_n):
     batch_size = 64
     epochs = 15
     model = load_model(base_model_path)
+
     global frozen_weights
     frozen_weights = model.get_layer('conv_pw_1').get_weights()
     frozen(model, n=freeze_n)
@@ -97,15 +97,18 @@ def train(dataset_path, base_model_path, freeze_n):
                                  verbose=1, 
                                  save_best_only=True, 
                                  mode='max')
-    custom_callback = MyCallback()
+    
+    custom_callback = CustomCallback()
 
-    hist = model.fit_generator(npy_generator(dataset_path, usage='train', batch_size=batch_size),
-                               steps_per_epoch = np.ceil(x_train_samples / batch_size).astype(int),
-                               validation_data=npy_generator(dataset_path, usage='valid', batch_size=batch_size),
-                               validation_steps=np.ceil(x_valid_samples / batch_size).astype(int),
-                               callbacks = [stopper, checkpoint, custom_callback],
-                               epochs=epochs, 
-                               verbose=1)
+    data_gen = DataGenerator(dataset_path)
+
+    model.fit_generator(data_gen.npy_generator(usage='train', batch_size=batch_size),
+                        steps_per_epoch=np.ceil(x_train_samples / batch_size).astype(int),
+                        validation_data=data_gen.npy_generator(usage='valid', batch_size=batch_size),
+                        validation_steps=np.ceil(x_valid_samples / batch_size).astype(int),
+                        callbacks=[stopper, checkpoint, custom_callback],
+                        epochs=epochs,
+                        verbose=1)
 
     model.save("B{}B-mobilenet.h5".format(freeze_n))
     print("Saved model to disk")
