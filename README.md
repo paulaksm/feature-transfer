@@ -17,14 +17,38 @@ The objective of this work is to investigate different transfer learning setups 
 Following [\[1\]](#References) the first thing to do is to train **base** networks for both tasks. For this study the chosen architecture was [MobileNet v1](https://arxiv.org/abs/1704.04861). Since there is a mismatch in the number of classes (1000 for ImageNet and 3 for lane following), only the top layers will be different throughout this experiment.
 
 + __baseA__ - MobileNet model, with weights pre-trained on ImageNet (1000 categories and 1.2 million images) 
-+ __baseB__ - MobileNet model, with weights randomly initialized trained on a balanced [self-driving dataset](https://github.com/paulaksm/self_driving_data) (3 categories and 40k images)
++ __baseB__ - MobileNet model, with weights randomly initialized trained on [self-driving dataset](https://github.com/paulaksm/self_driving_data) (3 categories and 40k images)
 
 BaseA model is not available in this repository because it's downloaded directly from Keras Applications.
 
-BaseB achieved 81% accuracy on validation and was trained for 10 epochs. BaseB model is available at `transfer/trained-models/baseB.h5`.
+BaseB achieved 91% accuracy on validation and was trained for 15 epochs. BaseB model is available at `transfer/trained-models/baseB.h5`.
 
-There is also a baseB+ model, available on `transfer/trained-models/baseBfinetune.h5`,  with weights initialized using the ImageNet pre-trained model and fine-tuned on task B. This model achieved 88% accuracy on validation and was trained for 10 epochs.
+There is also a baseB+ model, available on `transfer/trained-models/baseBfinetune.h5`,  with weights initialized using the ImageNet pre-trained model and fine-tuned on task B. This model achieved 92% accuracy on validation and was trained for 15 epochs.
 
+#### Self-driving dataset distribution info
+
+##### Training (total: 56172)
+
++ forward = 29606
++ left = 16141
++ right = 10425
+
+##### Validation (total: 7022)
+
++ forward = 3652
++ left = 2034
++ right = 1336
+
+##### Test (total: 4086)
+
++ forward = 1362
++ left = 1362
++ right = 1362
+
+
+### Selffer Network
+
+The selffer network investigates the interaction between layers, frozen some and training others for the same task. Example: `B3B` - the first 3 layers/blocks are copied from `baseB.h5` model and frozen. The following layers are initialized randomly and trained on self-driving dataset. This network is a control for the `transfer network`.
 
 ## Installation
 
