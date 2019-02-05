@@ -29,26 +29,31 @@ There is also a baseB+ model, available on `transfer/trained-models/baseBfinetun
 
 ##### Training (total: 56172)
 
-+ forward = 29606
 + left = 16141
 + right = 10425
++ forward = 29606
 
 ##### Validation (total: 7022)
 
-+ forward = 3652
 + left = 2034
 + right = 1336
++ forward = 3652
 
 ##### Test (total: 4086)
 
-+ forward = 1362
 + left = 1362
 + right = 1362
++ forward = 1362
 
+#### Experiment setup
+
+Since MobileNet architecture consists of 13 depthwise separable convolutional blocks, 1 regular convolutional layer and 1 fully-connected and softmax layer, we will consider $n \in [1, 12]$.
 
 ### Selffer Network
 
-The selffer network investigates the interaction between layers, frozen some and training others for the same task. Example: `B3B` - the first 3 layers/blocks are copied from `baseB.h5` model and frozen. The following layers are initialized randomly and trained on self-driving dataset. This network is a control for the `transfer network`.
+The selffer network investigates the interaction between layers, frozen some and training others for the same task. 
+
+Example: `B3B` - the first 3 layers/blocks are copied from `baseB.h5` model and frozen. The following layers are initialized randomly and trained on self-driving dataset. This network is a control for the `transfer network`.
 
 ## Installation
 
