@@ -54,8 +54,8 @@ def parse():
 
 
 def frozen(model,
-           n=1,
-           base):
+           base,
+           n=1):
     dsc = ['conv_dw_{}', 
            'conv_dw_{}_bn', 
            'conv_dw_{}_relu', 
@@ -88,7 +88,7 @@ def train(dataset_path, base_model_path, freeze_n):
 
     global frozen_weights
     frozen_weights = base_model.get_layer('conv_pw_1').get_weights()
-    frozen(model, n=freeze_n, base_model)
+    frozen(model, base_model, n=freeze_n)
     
     sgd = optimizers.SGD(lr=0.01, decay=0.0005, momentum=0.9)
     model.compile(loss='categorical_crossentropy',
