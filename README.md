@@ -47,7 +47,7 @@ There is also a baseB+ model, available on `transfer/trained-models/baseBfinetun
 
 #### Experiment setup
 
-Since MobileNet architecture consists of 13 depthwise separable convolutional blocks, 1 regular convolutional layer and 1 fully-connected and softmax layer, we will consider <dd> n &#8712; [1, 12]</dd>.
+Since MobileNet architecture consists of 13 depthwise separable convolutional blocks, 1 regular convolutional layer and 1 fully-connected and softmax layer, we will consider <pre> n &#8712; [1, 12]</pre>.
 
 ### Selffer Network
 
