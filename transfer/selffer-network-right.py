@@ -52,6 +52,17 @@ def parse():
 #                 end_idx = x.shape[0]
 #             yield x_batch, y_batch
 
+def keep(model,
+         base):
+    first = ['conv1',
+             'conv1_bn',
+             'conv1_relu']
+    for l in first:
+        layer = model.get_layer(l)
+        base_layer = base.get_layer(l)
+        layer.trainable = False  
+        layer.set_weights(base_layer.get_weights())
+
 
 def frozen(model,
            base,
@@ -88,8 +99,11 @@ def train(dataset_path, base_model_path, freeze_n):
 
     global frozen_weights
     frozen_weights = base_model.get_layer('conv_pw_1').get_weights()
+    keep(model, base_model)
     frozen(model, base_model, n=freeze_n)
     
+    del base_model
+
     sgd = optimizers.SGD(lr=0.01, decay=0.0005, momentum=0.9)
     model.compile(loss='categorical_crossentropy',
                   optimizer=sgd,
