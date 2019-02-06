@@ -5,6 +5,7 @@ from keras.models import load_model
 from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from DataGenerator import DataGenerator
+from keras import applications as pretrained
 
 
 class CustomCallback(Callback):
