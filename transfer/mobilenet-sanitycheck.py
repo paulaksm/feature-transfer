@@ -7,7 +7,7 @@ from keras import applications as pretrained
 from keras.models import Model
 from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
-from keras.layers import Conv2D, Reshape, Activation
+from keras.layers import Conv2D, Reshape, Activation, Dense
 from keras.initializers import VarianceScaling
 from DataGenerator import DataGenerator
 
@@ -62,11 +62,13 @@ model = pretrained.mobilenet.MobileNet(weights='imagenet')
 for l in model.layers:
   l.trainable = False
 model2 = Model(inputs=model.input, outputs=model.get_layer('dropout').output)
+dense = Dense(200)(model2.output)
+act_dense = Activation('relu')(dense)
 conv2d = Conv2D(3,
                (1, 1), 
                padding='same', 
                data_format='channels_last', 
-               kernel_initializer=VarianceScaling(distribution='uniform', mode='fan_avg'))(model2.output)
+               kernel_initializer=VarianceScaling(distribution='uniform', mode='fan_avg'))(act_dense)
 act = Activation('softmax')(conv2d)
 res = Reshape((3,), name='last_reshape')(act)
 

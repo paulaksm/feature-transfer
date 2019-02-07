@@ -50,14 +50,6 @@ There is also a baseB+ model, available on `transfer/trained-models/baseBfinetun
 MobileNet architecture consists of 13 depthwise separable convolutional blocks, 1 regular convolutional layer (input) and 1 fully-connected and softmax layers. 
 
 
-| model    |   B1B  |   B2B  |   B3B  |   B4B  |   B5B  |   B6B  |   B7B  |   B8B  |   B9B  |  B10B  |  B11B  |  B12B  |  B13B  |
-|----------|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|
-| val_acc  | 0.9101 | 0.9226 | 0.9209 | 0.9213 | 0.9211 | 0.9213 | 0.9206 | 0.9209 | 0.9105 | 0.9129 | 0.9165 | 0.9166 | 0.9145 |
-| test_acc | 0.9138 | 0.9231 | 0.9207 | 0.9199 | 0.9158 | 0.9211 | 0.9248 | 0.9260 | 0.9062 | 0.9106 | 0.9138 | 0.9133 | 0.9150 |
-
-
-
-
 | model | val_acc | test_acc |
 |-------|---------|----------|
 |  B1B  |  0.9101 |  0.9138  |
@@ -77,9 +69,14 @@ MobileNet architecture consists of 13 depthwise separable convolutional blocks, 
 
 ### Selffer Network
 
-The selffer network investigates the interaction between layers, frozen some and training others for the same task. 
+The selffer network investigates the interaction between layers; frozen some and training others for the same task. 
 
 Example: `B3B` - the first 3 layers/blocks are copied from `baseB.h5` model and frozen. The following layers are initialized randomly and trained on self-driving dataset. This network is a control for the `transfer network`.
+
+| model    |   B1B  |   B2B  |   B3B  |   B4B  |   B5B  |   B6B  |   B7B  |   B8B  |   B9B  |  B10B  |  B11B  |  B12B  |  B13B  |
+|----------|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|
+| val_acc  | 0.9101 | 0.9226 | 0.9209 | 0.9213 | 0.9211 | 0.9213 | 0.9206 | 0.9209 | 0.9105 | 0.9129 | 0.9165 | 0.9166 | 0.9145 |
+| test_acc | 0.9138 | 0.9231 | 0.9207 | 0.9199 | 0.9158 | 0.9211 | 0.9248 | 0.9260 | 0.9062 | 0.9106 | 0.9138 | 0.9133 | 0.9150 |
 
 ## Installation
 
