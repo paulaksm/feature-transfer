@@ -105,7 +105,7 @@ def train(dataset_path, copy_n):
                         epochs=epochs,
                         verbose=1)
 
-    model.save("A{}B+-mobilenet.h5".format(freeze_n))
+    model.save("A{}B+-mobilenet.h5".format(copy_n))
     print("Saved model to disk")
 
 
