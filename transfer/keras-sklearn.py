@@ -28,11 +28,12 @@ y_valid = np.load('/var/tmp/pksm/fewer_test_labels.npy')
 # x_train, y_train = data_gen.load_data(usage='train')
 # x_valid, y_valid = data_gen.load_data(usage='valid')
 
-x_train, y_train = data_gen.preprocess_data(x_train, y_train, balance=None)
-x_valid, y_valid = data_gen.preprocess_data(x_valid, y_valid, balance=None)
+x_train, _ = data_gen.preprocess_data(x_train, y_train, balance=None)
+x_valid, _ = data_gen.preprocess_data(x_valid, y_valid, balance=None)
 
 x_mob_train = None
 x_mob_valid = None
+
 bar = Bar('Training embeddings', max=y_train.shape[0])
 for i in x_train:
     i = np.expand_dims(i, axis=0)
@@ -44,8 +45,6 @@ for i in x_train:
     x_mob_train = np.concatenate((x_mob_train, emb), axis=0)
     bar.next()
 bar.finish()
-
-print(x_mob_train.shape, np.ravel(y_train).shape)
 
 bar = Bar('Valid embeddings', max=y_valid.shape[0])
 for i in x_valid:
