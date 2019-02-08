@@ -75,9 +75,10 @@ res = Reshape((3,), name='last_reshape')(act)
 model = Model(inputs=model2.input, outputs=res)
 
 
-sgd = optimizers.SGD(lr=0.01, decay=0.0005, momentum=0.9)
+# sgd = optimizers.SGD(lr=0.01, decay=0.0005, momentum=0.9)
+adam = optimizers.Adam(epsilon=1e-08)
 model.compile(loss='categorical_crossentropy',
-              optimizer=sgd,
+              optimizer=adam,
               metrics=['accuracy'])
 
 stopper = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=3, verbose=1)
