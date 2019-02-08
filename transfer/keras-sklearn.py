@@ -45,6 +45,8 @@ for i in x_train:
     bar.next()
 bar.finish()
 
+print(x_mob_train.shape, np.ravel(y_train).shape)
+
 bar = Bar('Valid embeddings', max=y_valid.shape[0])
 for i in x_valid:
     i = np.expand_dims(i, axis=0)
