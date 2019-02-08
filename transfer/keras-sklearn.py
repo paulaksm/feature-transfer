@@ -34,7 +34,7 @@ for i in x_train:
     emb = model.predict(i)
     emb = emb.flatten()
     if x_mob_train is None:
-        x_mob_train = np.array([], dtype=x_train[0].dtype).reshape(0, emb.shape[1])
+        x_mob_train = np.array([], dtype=x_train[0].dtype).reshape(0, emb.shape[0])
     x_mob_train = np.concatenate((x_mob_train, emb), axis=0)
 
 for i in x_valid:
@@ -42,7 +42,7 @@ for i in x_valid:
     emb = model.predict(i)
     emb = emb.flatten()
     if x_mob_valid is None:
-        x_mob_valid = np.array([], dtype=x_valid[0].dtype).reshape(0, emb.shape[1])
+        x_mob_valid = np.array([], dtype=x_valid[0].dtype).reshape(0, emb.shape[0])
     x_mob_valid = np.concatenate((x_mob_valid, emb), axis=0)
 
 y_train = np.ravel(y_train)
