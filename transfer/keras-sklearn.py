@@ -30,6 +30,7 @@ x_mob_train = None
 x_mob_valid = None
 
 for i in x_train:
+    i = np.expand_dims(i, axis=0)
     emb = model.predict(i)
     emb = emb.flatten()
     if x_mob_train is None:
@@ -37,6 +38,7 @@ for i in x_train:
     x_mob_train = np.concatenate((x_mob_train, emb), axis=0)
 
 for i in x_valid:
+    i = np.expand_dims(i, axis=0)
     emb = model.predict(i)
     emb = emb.flatten()
     if x_mob_valid is None:
