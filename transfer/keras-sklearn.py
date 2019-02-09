@@ -21,10 +21,10 @@ for l in model.layers:
 model2 = Model(inputs=model.input, outputs=model.get_layer('dropout').output)
 
 data_gen = DataGenerator('')
-x_train = np.load('/var/tmp/pksm/fewer_train_data.npy')
-y_train = np.load('/var/tmp/pksm/fewer_train_labels.npy')
-x_valid = np.load('/var/tmp/pksm/fewer_test_data.npy')
-y_valid = np.load('/var/tmp/pksm/fewer_test_labels.npy')
+x_train = np.load('/var/tmp/pksm/self_driving_data/data/train_data.npy')
+y_train = np.load('/var/tmp/pksm/self_driving_data/data/train_labels.npy')
+x_valid = np.load('/var/tmp/pksm/self_driving_data/data/valid_data.npy')
+y_valid = np.load('/var/tmp/pksm/self_driving_data/data/valid_labels.npy')
 # x_train, y_train = data_gen.load_data(usage='train')
 # x_valid, y_valid = data_gen.load_data(usage='valid')
 
