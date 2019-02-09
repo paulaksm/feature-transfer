@@ -64,12 +64,13 @@ for l in model.layers:
 model2 = Model(inputs=model.input, outputs=model.get_layer('dropout').output)
 dense = Dense(200)(model2.output)
 act_dense = Activation('relu')(dense)
-conv2d = Conv2D(3,
-               (1, 1), 
-               padding='same', 
-               data_format='channels_last', 
-               kernel_initializer=VarianceScaling(distribution='uniform', mode='fan_avg'))(act_dense)
-act = Activation('softmax')(conv2d)
+dense_2 = Dense(3)(act_dense)
+# conv2d = Conv2D(3,
+#                (1, 1), 
+#                padding='same', 
+#                data_format='channels_last', 
+#                kernel_initializer=VarianceScaling(distribution='uniform', mode='fan_avg'))(act_dense)
+act = Activation('softmax')(dense_2)
 res = Reshape((3,), name='last_reshape')(act)
 
 model = Model(inputs=model2.input, outputs=res)
@@ -90,14 +91,14 @@ checkpoint = ModelCheckpoint(path_checkpoints,
                              mode='max')
 
 
-hist = model.fit_generator(npy_generator(usage='train', batch_size=batch_size),
-                           steps_per_epoch = np.ceil(x_train_samples / batch_size).astype(int),
-                           validation_data=npy_generator(usage='valid', batch_size=batch_size),
-                           validation_steps=np.ceil(x_valid_samples / batch_size).astype(int),
-                           callbacks = [stopper, checkpoint],
-                           epochs=epochs, 
-                           verbose=1)
+model.fit_generator(npy_generator(usage='train', batch_size=batch_size),
+                    steps_per_epoch = np.ceil(x_train_samples / batch_size).astype(int),
+                    validation_data=npy_generator(usage='valid', batch_size=batch_size),
+                    validation_steps=np.ceil(x_valid_samples / batch_size).astype(int),
+                    callbacks = [stopper, checkpoint],
+                    epochs=epochs, 
+                    verbose=1)
 
 
-model.save("taskB-mobilenet.h5")
-print("Saved model to disk")
+# model.save("taskB-mobilenet.h5")
+# print("Saved model to disk")
