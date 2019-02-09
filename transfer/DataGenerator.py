@@ -174,9 +174,11 @@ class DataGenerator:
         while True:
             init_idx = 0
             end_idx = batch_size
+            permutation = np.random.permutation(x.shape[0])
             for i in range(np.ceil(x.shape[0] / batch_size).astype(int)):
-                x_batch = x[init_idx:end_idx][:]
-                y_batch = y[init_idx:end_idx]
+                sel_idx = permutation[init_idx:end_idx]
+                x_batch = x[sel_idx]
+                y_batch = y[sel_idx]
                 x_batch, y_batch = self.preprocess_data(x_batch, y_batch)
                 init_idx += batch_size
                 end_idx += batch_size
