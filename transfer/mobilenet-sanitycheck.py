@@ -51,6 +51,9 @@ x_train_samples = x_train.shape[0]
 x_valid = np.load('/content/data/valid_data.npy', mmap_mode='r')
 x_valid_samples = x_valid.shape[0]
 
+print('Total training data: {}'.format(x_train_samples))
+print('Total validation data: {}'.format(x_valid_samples))
+
 del x_train, x_valid
 
 ###############################################
