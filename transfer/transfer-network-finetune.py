@@ -31,7 +31,8 @@ def parse():
 
 def keep(model,
          base):
-    first = ['conv1',
+    first = ['conv1_pad',
+             'conv1',
              'conv1_bn',
              'conv1_relu']
     for l in first:
@@ -48,7 +49,7 @@ def frozen(model,
            'conv_dw_{}_relu', 
            'conv_pw_{}',
            'conv_pw_{}_bn',
-           'conv_dw_{}_relu']
+           'conv_pw_{}_relu']
     for i in range(1, n+1):
         for layer_name in dsc:
             layer = model.get_layer(layer_name.format(i))
