@@ -70,7 +70,8 @@ def train(dataset_path, copy_n):
     del x_train, x_valid
 
     batch_size = 64
-    epochs = 15
+    #epochs = 15
+    epochs = 25
     base_model = pretrained.mobilenet.MobileNet(weights='imagenet')
     model = pretrained.mobilenet.MobileNet(weights=None, classes=3)
 
