@@ -86,7 +86,7 @@ class DataGenerator:
                                        size=remove_size,
                                        replace=False)
             result = np.append(result, idx_rem)
-        idx_sel = np.delete(all_idx, result) # só pega o ultimo....arrumar!!!
+        idx_sel = np.delete(all_idx, result)
         data = data[idx_sel]
         labels = labels[idx_sel]
         return data, labels
@@ -164,7 +164,8 @@ class DataGenerator:
                       usage='train',
                       batch_size=64):
         '''
-        Pass
+        Generator used in Keras
+        
         '''
         file = os.path.join(self.path, usage)
         file_data = file + '_data.npy'
