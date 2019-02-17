@@ -5,21 +5,23 @@ Script for experiment AnB
 import os
 import numpy as np
 import argparse
-from keras.models import load_model
+from keras.models import Model
 from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from DataGenerator import DataGenerator
 from keras import applications as pretrained
-from keras.layers import GlobalAveragePooling2D, Conv2D, Activation, Reshape
+from keras.layers import GlobalAveragePooling2D, Conv2D, Activation, Reshape, Dropout
 from keras.backend import int_shape
+from keras.initializers import VarianceScaling
 
 
 class CustomCallback(Callback):
     def on_epoch_end(self, epoch, logs=None):
-        layer = self.model.get_layer('conv_pw_1')
-        weights = layer.get_weights()
-        msg = "Weights changed after epoch {}".format(epoch+1)
-        assert np.array_equal(frozen_weights, weights), msg
+        pass
+        # layer = self.model.get_layer('conv_pw_1')
+        # weights = layer.get_weights()
+        # msg = "Weights changed after epoch {}".format(epoch+1)
+        # assert np.array_equal(frozen_weights, weights), msg
 
 
 def parse():
