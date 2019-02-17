@@ -14,6 +14,9 @@ from DataGenerator import DataGenerator
 global data_gen
 data_gen = DataGenerator('/content/data/')
 
+# MobileNet width multiplier
+width = 0.25
+
 def npy_generator(dataset_path='/content/data/', usage='train', batch_size=64):
     file = os.path.join(dataset_path, usage)
     file_data = file + '_data.npy'
@@ -65,12 +68,12 @@ start_time = datetime.datetime.now()
 # os.makedirs(dir_checkpoints)
 # d = os.path.expanduser(dir_checkpoints)
 # path_checkpoints = os.path.join(d, 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5')
-path_checkpoints = 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
+path_checkpoints = '/content/gdrive/Team Drives/Models/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
 
-x_train = np.load('/content/data/train_data.npy', mmap_mode='r')
+x_train = np.load('/content/data/train_labels.npy', mmap_mode='r')
 x_train_samples = x_train.shape[0]
 
-x_valid = np.load('/content/data/valid_data.npy', mmap_mode='r')
+x_valid = np.load('/content/data/valid_labels.npy', mmap_mode='r')
 x_valid_samples = x_valid.shape[0]
 
 del x_train, x_valid
@@ -80,7 +83,7 @@ del x_train, x_valid
 batch_size = 64
 epochs = 15
 
-model = pretrained.mobilenet.MobileNet(weights='imagenet')
+model = pretrained.mobilenet.MobileNet(weights='imagenet', alpha=width)
 model2 = Model(inputs=model.input, outputs=model.get_layer('dropout').output)
 conv2d = Conv2D(3,
                (1, 1), 
