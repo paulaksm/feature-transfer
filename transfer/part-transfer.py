@@ -94,7 +94,7 @@ def train(dataset_path, freeze_n):
     # model = pretrained.mobilenet.MobileNet(weights='imagenet')
     model2 = Model(inputs=model.input, outputs=model.get_layer('conv_pw_{}_relu'.format(freeze_n)).output)
     glob_pool = GlobalAveragePooling2D()(model2.output)
-    res_1 = Reshape((int_shape(glob_pool)[1],), name='pool_reshape')(glob_pool)
+    res_1 = Reshape((1, 1, int_shape(glob_pool)[1]), name='pool_reshape')(glob_pool)
     drop = Dropout(0.001)(res_1)
     conv2d = Conv2D(3,
                    (1, 1), 
