@@ -46,7 +46,7 @@ def keep(model,
     for l in first:
         layer = model.get_layer(l)
         base_layer = base.get_layer(l)
-        layer.trainable = False  
+        # layer.trainable = False  
         layer.set_weights(base_layer.get_weights())
 
 
@@ -63,7 +63,7 @@ def frozen(model,
         for layer_name in dsc:
             layer = model.get_layer(layer_name.format(i))
             base_layer = base.get_layer(layer_name.format(i))
-            layer.trainable = False  
+            # layer.trainable = False  
             layer.set_weights(base_layer.get_weights())
 
 
