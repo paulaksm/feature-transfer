@@ -62,9 +62,9 @@ Example: `B3B` - the first 3 layers/blocks are copied from `baseB.h5` model and 
 
 As shown in the table, there is no fragile co-adapted features on successive layers. (pesquisar mais sobre esse tópico)
 
-### Selffer Network (BnB+)
+<!-- ### Selffer Network (BnB+)
 
-
+ -->
 
 ### Transfer Network (AnB)
 
@@ -85,11 +85,11 @@ As shown in the table, there is no fragile co-adapted features on successive lay
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+<!-- Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
 
 ```bash
 pip install foobar
-```
+``` -->
 
 #### Downloading dataset
 
@@ -97,7 +97,7 @@ The script to download the dataset for **task B** is available at [self-driving 
 
 You can place the created folder `data/` wherever you like, but _don't rename the `.npy` files_.
 
-## Usage
+<!-- ## Usage
 
 ```python
 import foobar
@@ -105,7 +105,15 @@ import foobar
 foobar.pluralize('word') # returns 'words'
 foobar.pluralize('goose') # returns 'geese'
 foobar.singularize('phenomena') # returns 'phenomenon'
-```
+``` -->
+
+## Conclusions
+
+* Given the amount of training data available for the target domain, there was not a significant advantage of using transfer learning in task B.
+
+* As reported in [1], initializing the network with weights trained on a different task, rather than random initialization, can improve performance (+1% accuracy) on the target task.
+
+* The poor results for transfer network AnB can be viewed as a negative transfer between tasks. Indicating that the actual feature extractors learned for task A are not useful for task B images.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
