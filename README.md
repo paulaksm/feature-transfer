@@ -83,6 +83,27 @@ As shown in the table, there is no fragile co-adapted features on successive lay
 | test_acc | 0.9087 | 0.9216 | 0.9216 | 0.9219 | 0.9023 | 0.9270 | 0.9260 | 0.9253 | 0.9243 | 0.9312 | 0.9312 | 0.9194 | 0.9309 |
 
 
+## Transferability analysis as a naive-pruning technique
+
+In this section, we will explore the transferability of features as a straightforward method of layer pruning in CNNs. The main idea is to chop MobileNet at _n_ adding a pooling layer, a fully-connected layer and a softmax classifier and train it as a sub-network.
+
+
+The table below shows the performance of each sub-network trained up to 15 epochs. 
+
+| n | val_acc | test_acc |
+|----|---------|----------|
+| 1 | 0.7677 | 0.7430 |
+| 2 | 0.7930 | 0.7905 |
+| 3 | 0.8036 | 0.7929 |
+| 4 | 0.8160 | 0.8098 |
+| 5 | 0.8212 | 0.7907 |
+| 6 | 0.8303 | 0.8272 |
+| 7 | 0.8444 | 0.8284 |
+| 8 | 0.8887 | 0.8749 |
+| 9 | 0.8675 | 0.8695 |
+| 10 | 0.9050 | 0.9011 |
+| 11 | 0.9152 | 0.9111 |
+
 ## Installation
 
 <!-- Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
@@ -127,3 +148,5 @@ Please make sure to update tests as appropriate.
 [1] [How transferable are features in deep neural networks?](https://arxiv.org/abs/1411.1792)
 
 [2] [A Survey on Transfer Learning](https://ieeexplore.ieee.org/document/5288526)
+
+[3] [Does Fragile Co-Adaptation Occur in Small Datasets](https://ieeexplore.ieee.org/abstract/document/8406745)
