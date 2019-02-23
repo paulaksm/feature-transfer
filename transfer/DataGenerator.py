@@ -119,7 +119,7 @@ class DataGenerator:
                         data,
                         labels,
                         target_shape=(224, 224),
-                        balance='None'):
+                        balance=None):
         """
         Preprocess data to be compliant with input_shape for a specific CNN
         architecture. Default is MobileNet v1.
@@ -130,7 +130,7 @@ class DataGenerator:
         :param target_shape: desired shape after preprocess
         :type target_shape: tuple of ints. Default is (224,224).
         :param balance: balance data by undersampling if 'undersampling'.\
-            Default is 'None'.
+            Default is None.
         :type balance: str
         :param target_model: preprocess specific to a target_model.\
             Default is keras.applications.mobilenet.
@@ -138,8 +138,8 @@ class DataGenerator:
         :return: data, labels
         :rtype: ndarray (shape=(N, 224, 224, 3)), ndarray (shape=(N, 3))
         """
-        balance_methods = ['None', 'undersampling', 'equals']
-        assert balance not in balance_methods, \
+        balance_methods = [None, 'undersampling', 'equals']
+        assert balance in balance_methods, \
                 "Not supported method: {}".format(balance)
         if balance == 'undersampling':
             data, labels = self._undersampling(data, labels)
