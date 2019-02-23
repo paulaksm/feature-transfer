@@ -101,9 +101,9 @@ def train(dataset_path, freeze_n):
                    (1, 1), 
                    padding='same', 
                    data_format='channels_last', 
-                   kernel_initializer=VarianceScaling(distribution='uniform', mode='fan_avg'))(drop)
+                   kernel_initializer=VarianceScaling(distribution='uniform', mode='fan_avg'))(res_1)
     act = Activation('softmax')(conv2d)
-    res = Reshape((3,), name='last_reshape')(res_1)
+    res = Reshape((3,), name='last_reshape')(act)
 
     model = Model(inputs=model2.input, outputs=res)
     
