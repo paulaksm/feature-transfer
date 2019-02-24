@@ -1,4 +1,4 @@
-# feature-transfer
+# Transferability Analysis Between CNNs
 
 about Transfer learning  (survey Pan)
 
@@ -63,7 +63,7 @@ The following figure is a compilation of all the experiments. All the colected d
 
 ![](transfer/plots/transfer_analysis.png)
 
-As also reported in [3], there are no fragile co-adapted features on successive layers. This phenomenon happens when gradient descent can find a good solution when the network is initially trained but not after re-initializing some layers and then retraining them.
+As also reported in [3], there are no fragile co-adapted features on successive layers. This phenomenon happens when gradient descent can find a good solution when the network is initially trained but not after re-initializing some layers and then retraining them. This is not the case here possibly because task B is relatively simple
 
 ### Conclusions
 
