@@ -1,8 +1,9 @@
 # Transferability Analysis Between CNNs
 
-about Transfer learning  (survey Pan)
 
-The objective of this work is to investigate different transfer learning setups for the target task of lane following using only frontal images and a discretized control (forward, left, right). The source task is image classification for the ImageNet Large Scale Visual Recognition Challenge (ILSVRC).
+Transfer learning (TL) consists of using knowledge acquired on a source learning task and use it to improve the performance of a target learning task. According to [4], the TL approach for this experiment is network-based, which reuses part of the network trained on a source domain to train on a target domain.
+
+The objective of this work is to investigate different transfer learning setups for the _target task_ of lane following using only frontal images and a discretized control (forward, left, right). The _source task_ is image classification for the ImageNet Large Scale Visual Recognition Challenge (ILSVRC).
 
 #### Techniques for feature transfer learning
 
@@ -17,9 +18,9 @@ The objective of this work is to investigate different transfer learning setups 
 Following [\[1\]](#References) the first thing to do is to train **base** networks for both tasks. For this study the chosen architecture was [MobileNet v1](https://arxiv.org/abs/1704.04861). Since there is a mismatch in the number of classes (1000 for ImageNet and 3 for lane following), only the top layers will be different throughout this experiment.
 
 + __baseA__ - MobileNet model, with weights pre-trained on ImageNet (1000 categories and 1.2 million images) 
-+ __baseB__ - MobileNet model, with weights randomly initialized trained on [self-driving dataset](https://github.com/paulaksm/self_driving_data) (3 categories and 50k images)
++ __baseB__ - MobileNet model, with weights randomly initialized trained on [self-driving dataset](https://github.com/paulaksm/self_driving_data) (3 categories and 56k images)
 
-BaseA model is not available in this repository because it's downloaded directly from Keras Applications.
+BaseA model is not available in this repository because it's available in Keras Applications.
 
 BaseB achieved 91% accuracy on validation and was trained for 15 epochs. BaseB model is available at `transfer/trained-models/baseB.h5`.
 
@@ -45,7 +46,7 @@ There is also a __baseB+__ model, available on `transfer/trained-models/baseBfin
 + right = 1362
 + forward = 1362
 
-### Experiment setup
+### Architectures
 
 The MobileNet architecture consists of one regular convolutional layer (input), 13 depthwise separable convolutional blocks, one fully-connected layer and a softmax layer for classification.
 
@@ -144,3 +145,5 @@ Please make sure to update tests as appropriate.
 [2] [A Survey on Transfer Learning](https://ieeexplore.ieee.org/document/5288526)
 
 [3] [Does Fragile Co-Adaptation Occur in Small Datasets](https://ieeexplore.ieee.org/abstract/document/8406745)
+
+[4] [A Survey On Deep Transfer Learning](https://arxiv.org/abs/1808.01974)
