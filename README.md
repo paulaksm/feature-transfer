@@ -85,8 +85,7 @@ As shown in the table, there is no fragile co-adapted features on successive lay
 
 ## Transferability analysis as a naive-pruning technique
 
-In this section, we will explore the transferability of features as a straightforward method of layer pruning in CNNs. The main idea is to chop MobileNet at _n_ adding a pooling layer, a fully-connected layer and a softmax classifier and train it as a sub-network.
-
+In this section, we will explore the transferability of features as a straightforward method of layer pruning in CNNs. The main idea is to chop MobileNet at _n_ adding a pooling layer, a fully-connected layer and a softmax classifier and finetune it for task B.
 
 The table below shows the performance of each sub-network trained up to 15 epochs. 
 
@@ -103,6 +102,17 @@ The table below shows the performance of each sub-network trained up to 15 epoch
 | 9 | 0.8675 | 0.8695 |
 | 10 | 0.9050 | 0.9011 |
 | 11 | 0.9152 | 0.9111 |
+
+It is evident that at n=11 the accuracy on test set is equal to the performance of `baseB` model, and down by 1% if compared to `baseB+` (finetuned version of baseB). Given this similar performance, the study of transferability of features may be seen as a __naive approach for layer pruning__. 
+
+The following table shows a comparison between a sliced model at block n=11 and `baseB+` model.
+
+|  | memory size | inference time | #parameters | accuracy |
+|------------|:-----------:|:----------------:|:-----------:|:--------:|
+| sliced n11 | 13M | 13 sec. 3ms/step | 1M | 91.94% |
+| base B+ | 25M  | 13 sec. 3ms/step | 3M | 92.31% |
+
+Even though there is no change in inference time, the reduction of footprint memory still may be of help to constraint resources systems.
 
 ## Installation
 
