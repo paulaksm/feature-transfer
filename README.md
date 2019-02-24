@@ -20,7 +20,7 @@ Following [\[1\]](#References) the first thing to do is to train **base** networ
 + __baseA__ - MobileNet model, with weights pre-trained on ImageNet (1000 categories and 1.2 million images) 
 + __baseB__ - MobileNet model, with weights randomly initialized trained on [self-driving dataset](https://github.com/paulaksm/self_driving_data) (3 categories and 56k images)
 
-BaseA model is not available in this repository because it's available in Keras Applications.
+BaseA model is not available in this repository because it's part of Keras Applications. 
 
 BaseB achieved 91% accuracy on validation and was trained for 15 epochs. BaseB model is available at `transfer/trained-models/baseB.h5`.
 
