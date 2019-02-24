@@ -23,7 +23,7 @@ BaseA model is not available in this repository because it's downloaded directly
 
 BaseB achieved 91% accuracy on validation and was trained for 15 epochs. BaseB model is available at `transfer/trained-models/baseB.h5`.
 
-There is also a baseB+ model, available on `transfer/trained-models/baseBfinetune.h5`,  with weights initialized using the ImageNet pre-trained model and fine-tuned on task B. This model achieved 92% accuracy on validation and was trained for 15 epochs.
+There is also a __baseB+__ model, available on `transfer/trained-models/baseBfinetune.h5`,  with weights initialized using the ImageNet pre-trained model and fine-tuned on task B. This model achieved 92% accuracy on validation and was trained for 15 epochs.
 
 #### Self-driving dataset distribution info
 
@@ -63,7 +63,15 @@ The following figure is a compilation of all the experiments. All the colected d
 
 ![](transfer/plots/transfer_analysis.png)
 
-As also reported in [3], there is no fragile co-adapted features on successive layers. 
+As also reported in [3], there are no fragile co-adapted features on successive layers. This phenomenon happens when gradient descent can find a good solution when the network is initially trained but not after re-initializing some layers and then retraining them.
+
+### Conclusions
+
+* Given the amount of training data available for the target domain, there was not a significant advantage of using transfer learning in task B.
+
+* As reported in [1], initializing the network with weights trained on a different task, rather than random initialization, can improve performance (+1% accuracy) on the target task.
+
+* The poor results for transfer network AnB can be viewed as a negative transfer between tasks. Indicating that the actual feature extractors learned for task A are not useful for task B images.
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -121,14 +129,6 @@ foobar.pluralize('word') # returns 'words'
 foobar.pluralize('goose') # returns 'geese'
 foobar.singularize('phenomena') # returns 'phenomenon'
 ``` -->
-
-## Conclusions
-
-* Given the amount of training data available for the target domain, there was not a significant advantage of using transfer learning in task B.
-
-* As reported in [1], initializing the network with weights trained on a different task, rather than random initialization, can improve performance (+1% accuracy) on the target task.
-
-* The poor results for transfer network AnB can be viewed as a negative transfer between tasks. Indicating that the actual feature extractors learned for task A are not useful for task B images.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
