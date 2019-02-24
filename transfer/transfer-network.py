@@ -1,3 +1,7 @@
+'''
+Script for experiment AnB
+
+'''
 import os
 import numpy as np
 import argparse
@@ -12,7 +16,7 @@ class CustomCallback(Callback):
     def on_epoch_end(self, epoch, logs=None):
         layer = self.model.get_layer('conv_pw_1')
         weights = layer.get_weights()
-        msg = "Weights change after epoch {}".format(epoch+1)
+        msg = "Weights changed after epoch {}".format(epoch+1)
         assert np.array_equal(frozen_weights, weights), msg
 
 
@@ -61,8 +65,8 @@ def frozen(model,
 
 def train(dataset_path, freeze_n):
     path_checkpoints = 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
-    file_train = os.path.join(dataset_path, 'train_data.npy')
-    file_valid = os.path.join(dataset_path, 'valid_data.npy')
+    file_train = os.path.join(dataset_path, 'train_labels.npy')
+    file_valid = os.path.join(dataset_path, 'valid_labels.npy')
     x_train = np.load(file_train, mmap_mode='r')
     x_train_samples = x_train.shape[0]
 
@@ -73,7 +77,7 @@ def train(dataset_path, freeze_n):
 
     batch_size = 64
     epochs = 15
-    base_model = pretrained.mobilenet.MobileNet(weights='imagenet')
+    base_model = pretrained.mobilenet.MobileNet(weights='imagenet') # Task A model
     model = pretrained.mobilenet.MobileNet(weights=None, classes=3)
 
     global frozen_weights

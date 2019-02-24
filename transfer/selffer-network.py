@@ -5,6 +5,7 @@ from keras.models import load_model
 from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from DataGenerator import DataGenerator
+from keras import applications as pretrained
 
 
 class CustomCallback(Callback):
@@ -51,19 +52,34 @@ def parse():
 #                 end_idx = x.shape[0]
 #             yield x_batch, y_batch
 
+def keep(model,
+         base):
+    first = ['conv1_pad',
+             'conv1',
+             'conv1_bn',
+             'conv1_relu']
+    for l in first:
+        layer = model.get_layer(l)
+        base_layer = base.get_layer(l)
+        layer.trainable = False  
+        layer.set_weights(base_layer.get_weights())
+
 
 def frozen(model,
+           base,
            n=1):
     dsc = ['conv_dw_{}', 
            'conv_dw_{}_bn', 
            'conv_dw_{}_relu', 
            'conv_pw_{}',
            'conv_pw_{}_bn',
-           'conv_dw_{}_relu']
+           'conv_pw_{}_relu']
     for i in range(1, n+1):
-        for layer in dsc:
-            model.get_layer(layer.format(i)).trainable = False  
-
+        for layer_name in dsc:
+            layer = model.get_layer(layer_name.format(i))
+            base_layer = base.get_layer(layer_name.format(i))
+            layer.trainable = False  
+            layer.set_weights(base_layer.get_weights())
 
 def train(dataset_path, base_model_path, freeze_n):
     path_checkpoints = 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
@@ -79,12 +95,16 @@ def train(dataset_path, base_model_path, freeze_n):
 
     batch_size = 64
     epochs = 15
-    model = load_model(base_model_path)
+    base_model = load_model(base_model_path)
+    model = pretrained.mobilenet.MobileNet(weights=None, classes=3)
 
     global frozen_weights
-    frozen_weights = model.get_layer('conv_pw_1').get_weights()
-    frozen(model, n=freeze_n)
+    frozen_weights = base_model.get_layer('conv_pw_1').get_weights()
+    keep(model, base_model)
+    frozen(model, base_model, n=freeze_n)
     
+    del base_model
+
     sgd = optimizers.SGD(lr=0.01, decay=0.0005, momentum=0.9)
     model.compile(loss='categorical_crossentropy',
                   optimizer=sgd,

@@ -58,7 +58,7 @@ def frozen(model,
 
 
 def train(dataset_path, copy_n):
-    path_checkpoints = 'model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
+    path_checkpoints = '/content/gdrive/Team Drives/Models/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
     file_train = os.path.join(dataset_path, 'train_data.npy')
     file_valid = os.path.join(dataset_path, 'valid_data.npy')
     x_train = np.load(file_train, mmap_mode='r')
@@ -70,7 +70,8 @@ def train(dataset_path, copy_n):
     del x_train, x_valid
 
     batch_size = 64
-    epochs = 15
+    #epochs = 15
+    epochs = 25
     base_model = pretrained.mobilenet.MobileNet(weights='imagenet')
     model = pretrained.mobilenet.MobileNet(weights=None, classes=3)
 
@@ -106,7 +107,7 @@ def train(dataset_path, copy_n):
                         epochs=epochs,
                         verbose=1)
 
-    model.save("A{}B+-mobilenet.h5".format(copy_n))
+    model.save("/content/gdrive/Team Drives/Models/A{}B+-mobilenet.h5".format(copy_n))
     print("Saved model to disk")
 
 
