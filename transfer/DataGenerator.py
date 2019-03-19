@@ -165,6 +165,7 @@ class DataGenerator:
 
     def npy_generator(self,
                       usage='train',
+                      preprocess=False,
                       batch_size=64):
         '''
         Generator used in Keras
@@ -183,7 +184,10 @@ class DataGenerator:
                 sel_idx = permutation[init_idx:end_idx]
                 x_batch = x[sel_idx]
                 y_batch = y[sel_idx]
-                x_batch, y_batch = self.preprocess_data(x_batch, y_batch)
+                if preprocess:
+                    x_batch, y_batch = self.preprocess_data(x_batch, y_batch)
+                else:
+                    x_batch /= 255
                 init_idx += batch_size
                 end_idx += batch_size
                 if end_idx > x.shape[0]:

@@ -42,11 +42,11 @@ def train(dataset_path):
 
     del x_train, x_valid
 
-    batch_size = 64
+    batch_size = 32
     epochs = 25
 
     # Model
-    inputs = Input(shape=(224, 224, 3))
+    inputs = Input(shape=(45, 80, 3))
 
     x = Dense(276, activation='relu')(inputs)
     x = Flatten()(x)
