@@ -42,14 +42,13 @@ def train(dataset_path):
 
     del x_train, x_valid
 
-    batch_size = 32
+    batch_size = 64
     epochs = 25
 
     # Model
-    inputs = Input(shape=(45, 80, 3))
+    inputs = Input(shape=(10800,)) #working with already flatten image
 
     x = Dense(276, activation='relu')(inputs)
-    x = Flatten()(x)
     predictions = Dense(3, activation='softmax')(x)
 
     model = Model(inputs=inputs, outputs=predictions)

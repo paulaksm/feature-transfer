@@ -188,7 +188,8 @@ class DataGenerator:
                     x_batch, y_batch = self.preprocess_data(x_batch, y_batch)
                 else:
                     x_batch = x_batch.copy()
-                    x_batch /= 255
+                    x_batch = x_batch.astype('float32') / 255
+                    y_batch = to_categorical(y_batch, 3)
                 init_idx += batch_size
                 end_idx += batch_size
                 if end_idx > x.shape[0]:
