@@ -187,6 +187,7 @@ class DataGenerator:
                 if preprocess:
                     x_batch, y_batch = self.preprocess_data(x_batch, y_batch)
                 else:
+                    x_batch = x_batch.copy()
                     x_batch /= 255
                 init_idx += batch_size
                 end_idx += batch_size
