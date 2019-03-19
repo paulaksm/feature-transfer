@@ -9,7 +9,7 @@ from keras.models import Model
 from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from DataGenerator import DataGenerator
-from keras.layers import Dense, Flatten
+from keras.layers import Dense, Flatten, Input
 
 
 class CustomCallback(Callback):
