@@ -4,7 +4,7 @@ First attempt to iterative pruning method proposed by Han 2015
 import os
 import numpy as np
 import argparse
-from keras.models import Model
+from keras.models import Model, load_model
 from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from DataGenerator import DataGenerator
@@ -32,9 +32,14 @@ def parse():
     parser.add_argument('-data_path',
                         '--data',
                         type=str, help='path to data folder')
-    parser.add_argument('-base_weights',
-                        '--weights',
-                        type=str, help='path to base weights file')
+    parser.add_argument('-base_model',
+                        '--model',
+                        type=str, help='path to base model file')
+    parser.add_argument('-keep_percentage',
+                        '--percentage',
+                        type=float, default=0.7,
+                        help='path to base model file')
+
     return parser.parse_args()
 
 
