@@ -1,6 +1,5 @@
 '''
-Script for training DFN on self-driving data...
-TODO: iterative pruning method proposed by Han 2015
+Sript for terative pruning method proposed by Han 2015
 '''
 import os
 import numpy as np

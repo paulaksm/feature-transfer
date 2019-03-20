@@ -119,7 +119,8 @@ class DataGenerator:
                         data,
                         labels,
                         target_shape=(224, 224),
-                        balance=None):
+                        balance=None,
+                        raw=False):
         """
         Preprocess data to be compliant with input_shape for a specific CNN
         architecture. Default is MobileNet v1.
@@ -145,6 +146,10 @@ class DataGenerator:
             data, labels = self._undersampling(data, labels)
         if balance == 'equals':
             data, labels = self._equals(data, labels)
+        if raw:
+            labels = to_categorical(labels, 3)
+            data = data.astype('float32') / 255
+            return data, labels
         shape = (self.shape[0], self.shape[1], 3)
         all_images = []
         flat_shape = target_shape[0] * target_shape[1] * 3
