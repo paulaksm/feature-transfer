@@ -5,7 +5,7 @@ TODO: iterative pruning method proposed by Han 2015
 import os
 import numpy as np
 import argparse
-from keras.models import Model
+from keras.models import Model, load_model
 from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from DataGenerator import DataGenerator
@@ -14,6 +14,7 @@ from keras.layers import Dense, Flatten, Input
 
 class CustomCallback(Callback):
     def on_train_end(self, epoch, logs=None):
+        model = load_model("/content/gdrive/Team Drives/Models/best_model.hdf5")
         test_data, test_labels = data_gen.load_data(usage='test')
         test_data, test_labels = data_gen.preprocess_data(test_data, 
                                                            test_labels,
@@ -23,8 +24,8 @@ class CustomCallback(Callback):
         print('Class distribution:')
         for i in range(3):
             print('{} : {}'.format(i, np.sum(test_labels[:, i]).astype(int)))
-        scores = self.model.evaluate(test_data, test_labels, verbose=1)
-        print("Model performanceon test dataset: {}".format(scores[1]))
+        scores = model.evaluate(test_data, test_labels, verbose=1)
+        print("Best model performance on test dataset: {}".format(scores[1]))
 
 
 def parse():
@@ -37,7 +38,8 @@ def parse():
 
 
 def train(dataset_path):
-    path_checkpoints = '/content/gdrive/Team Drives/Models/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
+    path_checkpoints = '/content/gdrive/Team Drives/Models/best_model.hdf5'
+    # path_checkpoints = '/content/gdrive/Team Drives/Models/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5'
     file_train = os.path.join(dataset_path, 'train_labels.npy')
     file_valid = os.path.join(dataset_path, 'valid_labels.npy')
     x_train = np.load(file_train, mmap_mode='r')
@@ -64,8 +66,7 @@ def train(dataset_path):
                   optimizer=sgd,
                   metrics=['accuracy'])
 
-    stopper = EarlyStopping(
-        monitor='val_acc', min_delta=0.0001, patience=3, verbose=1)
+    stopper = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=3, verbose=1)
 
     checkpoint = ModelCheckpoint(path_checkpoints,
                                  monitor='val_acc',

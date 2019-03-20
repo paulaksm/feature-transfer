@@ -1,5 +1,5 @@
 '''
-Sript for terative pruning method proposed by Han 2015
+First attempt to iterative pruning method proposed by Han 2015
 '''
 import os
 import numpy as np
@@ -12,12 +12,18 @@ from keras.layers import Dense, Flatten, Input
 
 
 class CustomCallback(Callback):
-    def on_epoch_end(self, epoch, logs=None):
-        pass
-        # layer = self.model.get_layer('conv_pw_1')
-        # weights = layer.get_weights()
-        # msg = "Weights changed after epoch {}".format(epoch+1)
-        # assert np.array_equal(frozen_weights, weights), msg
+    def on_train_end(self, epoch, logs=None):
+        test_data, test_labels = data_gen.load_data(usage='test')
+        test_data, test_labels = data_gen.preprocess_data(test_data, 
+                                                           test_labels,
+                                                           balance='equals',
+                                                           raw=True)
+        print('Evaluating model on {} samples'.format(test_labels.shape[0]))
+        print('Class distribution:')
+        for i in range(3):
+            print('{} : {}'.format(i, np.sum(test_labels[:, i]).astype(int)))
+        scores = self.model.evaluate(test_data, test_labels, verbose=1)
+        print("Model performanceon test dataset: {}".format(scores[1]))
 
 
 def parse():
@@ -26,6 +32,9 @@ def parse():
     parser.add_argument('-data_path',
                         '--data',
                         type=str, help='path to data folder')
+    parser.add_argument('-base_weights',
+                        '--weights',
+                        type=str, help='path to base weights file')
     return parser.parse_args()
 
 
@@ -57,8 +66,7 @@ def train(dataset_path):
                   optimizer=sgd,
                   metrics=['accuracy'])
 
-    stopper = EarlyStopping(
-        monitor='val_acc', min_delta=0.0001, patience=3, verbose=1)
+    stopper = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=3, verbose=1)
 
     checkpoint = ModelCheckpoint(path_checkpoints,
                                  monitor='val_acc',
@@ -68,7 +76,9 @@ def train(dataset_path):
 
     custom_callback = CustomCallback()
 
+    global data_gen
     data_gen = DataGenerator(dataset_path)
+
 
     model.fit_generator(data_gen.npy_generator(usage='train', batch_size=batch_size),
                         steps_per_epoch=np.ceil(
