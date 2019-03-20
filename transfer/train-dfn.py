@@ -75,9 +75,9 @@ def train(dataset_path):
 
     custom_callback = CustomCallback()
 
+    global data_gen
     data_gen = DataGenerator(dataset_path)
 
-    global data_gen
 
     model.fit_generator(data_gen.npy_generator(usage='train', batch_size=batch_size),
                         steps_per_epoch=np.ceil(
