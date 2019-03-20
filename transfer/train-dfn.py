@@ -10,11 +10,11 @@ from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from DataGenerator import DataGenerator
 from keras.layers import Dense, Flatten, Input
+import keras.backend as K
 
 
 class CustomCallback(Callback):
     def on_train_end(self, epoch, logs=None):
-        best_model = load_model("/content/gdrive/Team Drives/Models/best_model.hdf5")
         test_data, test_labels = data_gen.load_data(usage='test')
         test_data, test_labels = data_gen.preprocess_data(test_data, 
                                                           test_labels,
@@ -24,8 +24,8 @@ class CustomCallback(Callback):
         print('Class distribution:')
         for i in range(3):
             print('{} : {}'.format(i, np.sum(test_labels[:, i]).astype(int)))
-        scores = best_model.evaluate(test_data, test_labels, verbose=1)
-        print("Best model performance on test dataset: {}".format(scores[1]))
+        scores = self.model.evaluate(test_data, test_labels, verbose=1)
+        print("Overall model performance on test dataset: {}".format(scores[1]))
 
 
 def parse():
@@ -56,7 +56,8 @@ def train(dataset_path):
     # Model
     inputs = Input(shape=(10800,)) #working with already flatten image
 
-    x = Dense(276, activation='relu')(inputs)
+    x = Dense(1333, activation='relu')(inputs)
+    x = Dense(200, activation='relu')(x)
     predictions = Dense(3, activation='softmax')(x)
 
     model = Model(inputs=inputs, outputs=predictions)
@@ -65,6 +66,8 @@ def train(dataset_path):
     model.compile(loss='categorical_crossentropy',
                   optimizer=sgd,
                   metrics=['accuracy'])
+    trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
+    print("Total number of parameters: {}".format(trainable_count))
 
     stopper = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=3, verbose=1)
 
