@@ -14,7 +14,7 @@ from keras.layers import Dense, Flatten, Input
 
 class CustomCallback(Callback):
     def on_train_end(self, epoch, logs=None):
-        #model = load_model("/content/gdrive/Team Drives/Models/best_model.hdf5")
+        best_model = load_model("/content/gdrive/Team Drives/Models/best_model.hdf5")
         test_data, test_labels = data_gen.load_data(usage='test')
         test_data, test_labels = data_gen.preprocess_data(test_data, 
                                                           test_labels,
@@ -24,7 +24,7 @@ class CustomCallback(Callback):
         print('Class distribution:')
         for i in range(3):
             print('{} : {}'.format(i, np.sum(test_labels[:, i]).astype(int)))
-        scores = self.model.evaluate(test_data, test_labels, verbose=1)
+        scores = best_model.evaluate(test_data, test_labels, verbose=1)
         print("Best model performance on test dataset: {}".format(scores[1]))
 
 

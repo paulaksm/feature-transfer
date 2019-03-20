@@ -35,10 +35,11 @@ def parse():
     parser.add_argument('-base_model',
                         '--model',
                         type=str, help='path to base model file')
-    parser.add_argument('-keep_percentage',
-                        '--percentage',
-                        type=float, default=0.7,
-                        help='path to base model file')
+    parser.add_argument('-prune_iter',
+                        '--prune',
+                        type=float, default=0.3,
+                        help='percentage to prune per iteration (default=0.3)')
+    
 
     return parser.parse_args()
 
