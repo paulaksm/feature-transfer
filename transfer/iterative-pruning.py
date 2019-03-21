@@ -9,6 +9,7 @@ from keras import optimizers
 from keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 from DataGenerator import DataGenerator
 from keras.layers import Dense, Flatten, Input
+import keras.backend as K
 
 
 class CustomCallback(Callback):
@@ -33,6 +34,9 @@ class CustomCallback(Callback):
             print('{} : {}'.format(i, np.sum(test_labels[:, i]).astype(int)))
         scores = self.model.evaluate(test_data, test_labels, verbose=1)
         print("Model performanceon test dataset: {}".format(scores[1]))
+        print("")
+        trainable_count = int(np.sum([K.count_params(p) for p in set(self.model.trainable_weights)]))
+        print("Number of trainable parameters: {}".format(trainable_count))
 
 
 def parse():
@@ -60,7 +64,10 @@ def parse():
 def iterative(path_data, model, prune_ratio, iterations):
     pr = 1
     model = load_model(model)
+    trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
+    print("Number of trainable parameters {}".format(trainable_count))
     for i in range(iterations):
+        print("Pruning and retraining: {} iteration".format(i))
         pr = pr * prune_ratio
         all_weights = model.get_weights()
         list_flat = []
@@ -70,6 +77,8 @@ def iterative(path_data, model, prune_ratio, iterations):
         flat = sorted(map(abs, flat))
         threshold = flat[int(len(flat) * (1-pr))]
         del list_flat
+        print("Ratio of weights kept {}".format(1-pr))
+        print("Nonzero weights before pruning: {}".format(np.nonzero(flat)))
         global prune_mask
         prune_mask = []
         curr_weights = []
