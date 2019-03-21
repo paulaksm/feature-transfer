@@ -59,6 +59,7 @@ def parse():
 
 def iterative(path_data, model, prune_ratio, iterations):
     pr = 1
+    model = load_model(model)
     for i in range(iterations):
         pr = pr * prune_ratio
         all_weights = model.get_weights()
