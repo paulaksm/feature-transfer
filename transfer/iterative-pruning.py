@@ -64,7 +64,7 @@ def iterative(path_data, model, prune_ratio, iterations):
         pr = pr * prune_ratio
         all_weights = model.get_weights()
         list_flat = []
-        for j in range(all_weights.shape[0]):
+        for j in range(len(all_weights.shape)):
           list_flat.append(all_weights[j].reshape(-1))
         flat = np.concatenate(list_flat)
         flat = sorted(map(abs, flat))
