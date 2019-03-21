@@ -34,10 +34,6 @@ class CustomCallback(Callback):
             print('{} : {}'.format(i, np.sum(test_labels[:, i]).astype(int)))
         scores = self.model.evaluate(test_data, test_labels, verbose=1)
         print("Model performanceon test dataset: {}".format(scores[1]))
-        print("")
-        trainable_count = int(np.sum([K.count_params(p) for p in set(self.model.trainable_weights)]))
-        print("Number of trainable parameters: {}".format(trainable_count))
-
 
 def parse():
     description = 'Iterative pruning - v0'
@@ -48,10 +44,10 @@ def parse():
     parser.add_argument('-base_model',
                         '--model',
                         type=str, help='path to base model file')
-    parser.add_argument('-prune_iter',
-                        '--prune',
-                        type=float, default=0.3,
-                        help='percentage to prune per iteration (default=0.3)')
+    parser.add_argument('-keep_iter',
+                        '--keep',
+                        type=float, default=0.7,
+                        help='percentage to keep per iteration (default=0.7)')
     parser.add_argument('-iter',
                         '--iter',
                         type=int, default=5,
@@ -65,7 +61,7 @@ def iterative(path_data, model, prune_ratio, iterations):
     pr = 1
     model = load_model(model)
     trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
-    print("Number of trainable parameters {}".format(trainable_count))
+    print("Number of nonzero trainable parameters {}".format(np.nonzero(trainable_count)))
     for i in range(iterations):
         print("Pruning and retraining: {} iteration".format(i))
         pr = pr * prune_ratio
@@ -77,19 +73,19 @@ def iterative(path_data, model, prune_ratio, iterations):
         flat = sorted(map(abs, flat))
         threshold = flat[int(len(flat) * (1-pr))]
         del list_flat
-        print("Ratio of weights kept {}".format(1-pr))
-        print("Nonzero weights before pruning: {}".format(np.nonzero(flat)))
+        print("Ratio of weights kept: {}".format(pr))
+        print("Nonzero weights before pruning: {}".format(np.count_nonzero(flat)))
         global prune_mask
         prune_mask = []
         curr_weights = []
         for i in range(len(all_weights)):
             prune_mask.append(abs(all_weights[i]) > threshold)
             curr_weights.append(np.multiply(all_weights[i], prune_mask[i]))
-        model = train(path_data, curr_weights)
+        train(path_data, curr_weights, pr)
 
 
 
-def train(dataset_path, custom_weights):
+def train(dataset_path, custom_weights, pr):
     path_checkpoints = '/content/gdrive/Team Drives/Models/best_model.hdf5'
     file_train = os.path.join(dataset_path, 'train_labels.npy')
     file_valid = os.path.join(dataset_path, 'valid_labels.npy')
@@ -143,8 +139,11 @@ def train(dataset_path, custom_weights):
                             x_valid_samples / batch_size).astype(int),
                         callbacks=[stopper, checkpoint, custom_callback],
                         epochs=epochs,
-                        verbose=1)
-    return model
+                        verbose=0)
+    # trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
+    # trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
+    # print("Number of nonzero trainable parameters: {}".format(np.nonzero(trainable_count)))
+    model.save('/content/gdrive/Team Drives/Models/weight-kept-ratio-{}.hdf5'.format(pr))
 
 
 def main():
