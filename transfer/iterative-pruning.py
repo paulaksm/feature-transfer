@@ -57,14 +57,14 @@ def parse():
 
 
 
-def iterative(path_data, model, prune_ratio, iterations):
+def iterative(path_data, model, keep_ratio, iterations):
     pr = 1
     model = load_model(model)
     trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
     print("Number of nonzero trainable parameters {}".format(np.nonzero(trainable_count)))
     for i in range(iterations):
         print("Pruning and retraining: {} iteration".format(i))
-        pr = pr * prune_ratio
+        pr = pr * keep_ratio
         all_weights = model.get_weights()
         list_flat = []
         for j in range(len(all_weights)):
@@ -148,7 +148,7 @@ def train(dataset_path, custom_weights, pr):
 
 def main():
     args = parse()
-    iterative(args.data, args.model, args.prune, args.iter)
+    iterative(args.data, args.model, args.keep, args.iter)
 
 
 if __name__ == '__main__':
