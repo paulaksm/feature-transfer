@@ -33,7 +33,7 @@ class CustomCallback(Callback):
         for i in range(3):
             print('{} : {}'.format(i, np.sum(test_labels[:, i]).astype(int)))
         scores = self.model.evaluate(test_data, test_labels, verbose=1)
-        print("Model performanceon test dataset: {}".format(scores[1]))
+        print("Model performance on test dataset: {}".format(scores[1]))
 
 def parse():
     description = 'Iterative pruning - v0'
@@ -61,7 +61,7 @@ def iterative(path_data, model, keep_ratio, iterations):
     pr = 1
     model = load_model(model)
     trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
-    print("Number of nonzero trainable parameters {}".format(np.nonzero(trainable_count)))
+    print("Number of nonzero trainable parameters {}".format(np.count_nonzero(trainable_count)))
     for i in range(iterations):
         print("Pruning and retraining: {} iteration".format(i))
         pr = pr * keep_ratio
@@ -74,7 +74,10 @@ def iterative(path_data, model, keep_ratio, iterations):
         threshold = flat[int(len(flat) * (1-pr))]
         del list_flat
         print("Ratio of weights kept: {}".format(pr))
-        print("Nonzero weights before pruning: {}".format(np.count_nonzero(flat)))
+        nonzero = np.count_nonzero(flat)
+        print("Nonzero parameters before pruning: {}".format(nonzero))
+        print("Total parameters: {}".format(flat.shape[0]))
+        print("Parameter compression rate: {}x".format(int(flat.shape[0]/nonzero)))
         global prune_mask
         prune_mask = []
         curr_weights = []
@@ -86,7 +89,7 @@ def iterative(path_data, model, keep_ratio, iterations):
 
 
 def train(dataset_path, custom_weights, pr):
-    path_checkpoints = '/content/gdrive/Team Drives/Models/best_model.hdf5'
+    # path_checkpoints = '/content/gdrive/Team Drives/Models/best_model.hdf5'
     file_train = os.path.join(dataset_path, 'train_labels.npy')
     file_valid = os.path.join(dataset_path, 'valid_labels.npy')
     x_train = np.load(file_train, mmap_mode='r')
@@ -117,13 +120,13 @@ def train(dataset_path, custom_weights, pr):
                   optimizer=sgd,
                   metrics=['accuracy'])
 
-    stopper = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=3, verbose=1)
+    stopper = EarlyStopping(monitor='val_acc', min_delta=0.0001, patience=3, verbose=0)
 
-    checkpoint = ModelCheckpoint(path_checkpoints,
-                                 monitor='val_acc',
-                                 verbose=1,
-                                 save_best_only=True,
-                                 mode='max')
+    # checkpoint = ModelCheckpoint(path_checkpoints,
+    #                              monitor='val_acc',
+    #                              verbose=1,
+    #                              save_best_only=True,
+    #                              mode='max')
 
     custom_callback = CustomCallback()
 
@@ -137,7 +140,7 @@ def train(dataset_path, custom_weights, pr):
                             usage='valid', batch_size=batch_size),
                         validation_steps=np.ceil(
                             x_valid_samples / batch_size).astype(int),
-                        callbacks=[stopper, checkpoint, custom_callback],
+                        callbacks=[stopper, custom_callback],
                         epochs=epochs,
                         verbose=0)
     # trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
