@@ -60,6 +60,7 @@ def parse():
 def iterative(path_data, model, keep_ratio, iterations):
     pr = 1
     model = load_model(model)
+    orig_weights = model.get_weights()
     for i in range(iterations):
         print("Pruning and retraining: {} iteration".format(i))
         pr = pr * keep_ratio
@@ -81,8 +82,8 @@ def iterative(path_data, model, keep_ratio, iterations):
         curr_weights = []
         for i in range(len(all_weights)):
             prune_mask.append(abs(all_weights[i]) > threshold)
-            curr_weights.append(np.multiply(all_weights[i], prune_mask[i]))
-        train(path_data, curr_weights, pr)
+            curr_weights.append(np.multiply(orig_weights[i], prune_mask[i]))
+        model = train(path_data, curr_weights, pr)
 
 
 
@@ -145,6 +146,7 @@ def train(dataset_path, custom_weights, pr):
     # trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
     # print("Number of nonzero trainable parameters: {}".format(np.nonzero(trainable_count)))
     model.save('/content/gdrive/Team Drives/Models/weight-kept-ratio-{}.hdf5'.format(pr))
+    return model
 
 
 def main():
