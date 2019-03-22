@@ -70,9 +70,9 @@ def iterative(path_data, model, keep_ratio, iterations):
         for j in range(len(all_weights)):
           list_flat.append(all_weights[j].reshape(-1))
         flat = np.concatenate(list_flat)
-        flat = sorted(map(abs, flat))
-        threshold = flat[int(len(flat) * (1-pr))]
-        del list_flat
+        sort_flat = sorted(map(abs, flat))
+        threshold = sort_flat[int(len(sort_flat) * (1-pr))]
+        del list_flat, sort_flat
         print("Ratio of weights kept: {}".format(pr))
         nonzero = np.count_nonzero(flat)
         print("Nonzero parameters before pruning: {}".format(nonzero))
