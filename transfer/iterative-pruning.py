@@ -14,7 +14,7 @@ import keras.backend as K
 
 class CustomCallback(Callback):
 
-    def on_epoch_end(self, epoch, logs=None):
+    def on_batch_end(self, batch, logs=None):
         # zero out weights accordingly to prune_mask list 
         final = []
         iter_weights = self.model.get_weights()
