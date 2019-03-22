@@ -60,8 +60,6 @@ def parse():
 def iterative(path_data, model, keep_ratio, iterations):
     pr = 1
     model = load_model(model)
-    trainable_count = int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
-    print("Number of nonzero trainable parameters {}".format(np.count_nonzero(trainable_count)))
     for i in range(iterations):
         print("Pruning and retraining: {} iteration".format(i))
         pr = pr * keep_ratio
