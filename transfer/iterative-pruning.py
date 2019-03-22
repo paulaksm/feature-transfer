@@ -76,7 +76,7 @@ def iterative(path_data, model, keep_ratio, iterations):
         nonzero = np.count_nonzero(flat)
         print("Nonzero parameters before pruning: {}".format(nonzero))
         print("Total parameters: {}".format(flat.shape[0]))
-        print("Parameter compression rate: {}x".format(int(flat.shape[0]/nonzero)))
+        print("Parameter compression rate: {}x".format(round(flat.shape[0]/nonzero, 2)))
         global prune_mask
         prune_mask = []
         curr_weights = []
